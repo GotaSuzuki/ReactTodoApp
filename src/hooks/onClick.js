@@ -1,25 +1,25 @@
+import { useRef } from 'react'
 import { useRecoilState } from 'recoil';
 import { completeTodoState } from '../store/completeTodoState';
 import { incompleteTodoState } from '../store/incompleteTodoState';
-import { todoTextState } from '../store/todoTextState';
 import { v4 as uuidv4 } from 'uuid';
 
 export const useOnClick = () => {
   const [incompleteTodo, setIncompleteTodo] = useRecoilState(incompleteTodoState);
   const [completeTodo, setCompleteTodo] = useRecoilState(completeTodoState);
-  const [todoText, setTodoText] = useRecoilState(todoTextState);
+  const todoTextRef = useRef('');
 
   const handleAdd = () => {
-    if (todoText === '') return;
+    if (todoTextRef.current.value === '') return;
 
     const newTodo = {
       id: uuidv4(),
-      text: todoText
+      text: todoTextRef.current.value
     }
     const newIncompleteTodo = [...incompleteTodo];
     newIncompleteTodo.push(newTodo);
     setIncompleteTodo(newIncompleteTodo);
-    setTodoText('');
+    todoTextRef.current.value = '';
   }
 
   const handleDelete = (index) => {
@@ -44,5 +44,5 @@ export const useOnClick = () => {
     setIncompleteTodo(newIncompleteTodo);
   }
 
-  return { handleAdd, handleDelete, handleComplete, handleBack }
+  return { handleAdd, todoTextRef, handleDelete, handleComplete, handleBack }
 }
